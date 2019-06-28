@@ -1,137 +1,51 @@
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
-{#    <meta http-equiv="X-UA-Compatible" content="ie=edge">#}
-{#    <title>TodoList</title>#}
-{#    <link rel="stylesheet" href="style.css">#}
-{#</head>#}
-{#<body>#}
-{#	<div class="container">#}
-{#		<div class="row">#}
-{#			<div class="intro col-12">#}
-{#				<h1>Office To-dos</h1>#}
-{#			</div>#}
-{#		</div>#}
-{##}
-{#		<div class="row">#}
-{#			<div class="col-12">#}
-{#				<input id="userInput" type="text" placeholder="New item..." maxlength="27">#}
-{#				<button id="enter">Add Item</button>#}
-{#			</div>#}
-{#		</div>#}
-{##}
-{#		<!-- Empty List -->#}
-{#		<div class="row">#}
-{#			<div class="listItems col-12">#}
-{#				<ul class="col-12 offset-0 col-sm-8 offset-sm-2">#}
-{#				</ul>#}
-{#			</div>#}
-{#		</div>#}
-{##}
-{#	</div>#}
-{#<script type="text/javascript">#}
-{#    var enterButton = document.getElementById("enter");#}
-{#    var input = document.getElementById("userInput");#}
-{#    var ul = document.querySelector("ul");#}
-{#    var item = document.getElementsByTagName("li");#}
-{##}
-{#    function inputLength(){#}
-{#        return input.value.length;#}
-{#    } #}
-{##}
-{#    function listLength(){#}
-{#        return item.length;#}
-{#    }#}
-{#//ajax call#}
-{##}
-{##}
-{##}
-{##}
-{##}
-{#    //end ajax call#}
-{#    function createListElement() {#}
-{#        var li = document.createElement("li"); // creates an element "li"#}
-{#        li.appendChild(document.createTextNode(input.value)); //makes text from input field the li text#}
-{#        ul.appendChild(li); //adds li to ul#}
-{#        input.value = ""; //Reset text input field#}
-{##}
-{##}
-{#        //START STRIKETHROUGH#}
-{#        // because it's in the function, it only adds it for new items#}
-{#        function crossOut() {#}
-{#            li.classList.toggle("done");#}
-{#        }#}
-{##}
-{#        li.addEventListener("click",crossOut);#}
-{#        //END STRIKETHROUGH#}
-{##}
-{##}
-{#        // START ADD DELETE BUTTON#}
-{#        var dBtn = document.createElement("button");#}
-{#        dBtn.appendChild(document.createTextNode("X"));#}
-{#        li.appendChild(dBtn);#}
-{#        dBtn.addEventListener("click", deleteListItem);#}
-{#        // END ADD DELETE BUTTON#}
-{##}
-{##}
-{#        //ADD CLASS DELETE (DISPLAY: NONE)#}
-{#        function deleteListItem(){#}
-{#            li.classList.add("delete")#}
-{#        }#}
-{#        //END ADD CLASS DELETE#}
-{#    }#}
-{##}
-{##}
-{#    function addListAfterClick(){#}
-{#        if (inputLength() > 0) { //makes sure that an empty input field doesn't create a li#}
-{#            createListElement();#}
-{#        }#}
-{#    }#}
-{##}
-{#    function addListAfterKeypress(event) {#}
-{#        if (inputLength() > 0 && event.which ===13) { //this now looks to see if you hit "enter"/"return"#}
-{#            //the 13 is the enter key's keycode, this could also be display by event.keyCode === 13#}
-{#            createListElement();#}
-{#        } #}
-{#    }#}
-{##}
-{##}
-{#    enterButton.addEventListener("click",addListAfterClick);#}
-{##}
-{#    input.addEventListener("keypress", addListAfterKeypress);#}
-{##}
-{##}
-{#    </script>#}
-{#</body>#}
-{#</html>#}
-
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script>
-$(document).ready(function(){
-    $("#btn1").click(function(){
-        $("p").append(" <b>Newly added appended text</b>.");
-    });
-    $("#btn2").click(function(){
-        $("ol").append("<li><b>Newly added appended item</b></li>");
-    });
-});
-</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <title>TodoList</title>
+
 </head>
+
 <body>
-<p>This is a paragraph.</p>
-<p>This is another paragraph.</p>
-<ol>
-  <li>Item no.1</li>
-  <li>Item no.2</li>
-  <li>Item no.3</li>
-</ol>
-<button id="btn1">Append text</button>
-<button id="btn2">Append item</button>
+<br/>
+<br/>
+<div class="container">
+    <form action="">
+        <button type="submit" class="btn btn-info">Add Task</button>
+        <input type="text" placeholder="Enter the task..">
+    </form>
+
+    <ul class="list-group" id="myUl"></ul>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        console.log('Working 1');
+        $.ajax({
+            url: 'http://localhost:8000/v1/api/',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                let items = [];
+                $.each(data, function (key, value) {
+                    items.push('<li class="list-group-item list-group-item-success">' + value['name'] + '</li>');
+                });
+                $('#myUl').append(items.join(''));
+            },
+
+            failure: function (errMsg) {
+                console.log(errMsg);
+            }
+        }); //end ajax
+    });// end ready
+
+</script>
 </body>
 </html>
+
+
+
