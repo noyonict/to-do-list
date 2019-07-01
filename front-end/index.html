@@ -14,17 +14,17 @@
 <br/>
 <br/>
 <div class="container">
-    <form action="">
-        <button type="submit" class="btn btn-info">Add Task</button>
-        <input type="text" placeholder="Enter the task..">
+    <form action="" method="post">
+        <button id="addTask" type="submit" class="btn btn-info">Add Task</button>
+        <input id="task" type="text" placeholder="Enter the task.."/>
     </form>
 
     <ul class="list-group" id="myUl"></ul>
+    <button id="del">DELETE</button>
 </div>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        console.log('Working 1');
         $.ajax({
             url: 'http://localhost:8000/v1/api/',
             type: 'GET',
@@ -32,17 +32,60 @@
             success: function (data) {
                 let items = [];
                 $.each(data, function (key, value) {
-                    items.push('<li class="list-group-item list-group-item-success">' + value['name'] + '</li>');
+                    items.push('<li class="list-group-item list-group-item-success" onclick="completeTask(' + this.id + ')">' + this.name + '<button onclick="deleteTask(' + this.id + ')" id="' + this.id + '">' + 'Delete' + '</button>' + ' </li>');
+
                 });
                 $('#myUl').append(items.join(''));
             },
-
             failure: function (errMsg) {
                 console.log(errMsg);
             }
-        }); //end ajax
-    });// end ready
+        }); //end ajax get
 
+        /*  $('#addTask').click(function () {
+              $.post('http://localhost:8000/v1/api/', {name: $("#task").val()});
+          }); //end post
+
+          $('button').click(function () {
+
+              console.log('delete');
+          });
+
+        $('').click(function () {
+            alert("The id is " + this.id);
+        });*/
+
+    });// end ready
+    $('#addTask').click(function () {
+              $.post('http://localhost:8000/v1/api/', {name: $("#task").val()});
+          });
+    function deleteTask(id) {
+        $.ajax({
+            url: 'http://localhost:8000/v1/api/' + id.toString() + '/',
+            type: 'DELETE',
+            contentType: "application/json",
+            success: function (data) {
+                console.log(data)
+            },
+            failure: function (errMsg) {
+                console.log(errMsg);
+            }
+        });
+    }
+
+    function completeTask(id) {
+        $.ajax({
+            url: 'http://localhost:8000/v1/api/' + id.toString() + '/',
+            type: 'PUT',
+            contentType: "application/json",
+            success: function (data) {
+                console.log(data)
+            },
+            failure: function (errMsg) {
+                console.log(errMsg);
+            }
+        });
+    }
 </script>
 </body>
 </html>
