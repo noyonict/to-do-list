@@ -157,7 +157,7 @@
             success: function (data) {
                 let items = [];
                 $.each(data, function (key, value) {
-                    items.push('<li>' + this.name + '</li>');
+                    items.push('<li onclick="completeTask(' + this.id + ')">' + this.name + '</li>');
                 });
                 $('#myUL').append(items.join(''));
             },
@@ -206,23 +206,25 @@
 
     // Add a "checked" symbol when clicking on a list item
     let list = document.querySelector('ul');
-    list.addEventListener('click', function (ev) {
-        if (ev.target.tagName === 'LI') {
-            ev.target.classList.toggle('checked');
-            $.ajax({
-                url: 'http://localhost:8000/v1/api/2/',
-                type: 'PUT',
-                contentType: "application/json",
-                success: function (data) {
-                    console.log('Success!')
-                },
+    function completeTask(id) {
+        list.addEventListener('click', function (ev) {
+            if (ev.target.tagName === 'LI') {
+                ev.target.classList.toggle('checked');
+                $.ajax({
+                    url: 'http://localhost:8000/v1/api/' + id.toString() + '/',
+                    type: 'PUT',
+                    contentType: "application/json",
+                    success: function (data) {
+                        console.log('Success!')
+                    },
 
-                failure: function (errMsg) {
-                    console.log(errMsg);
-                }
-            }); //end ajax
-        }
-    }, false);
+                    failure: function (errMsg) {
+                        console.log(errMsg);
+                    }
+                }); //end ajax
+            }
+        }, false);
+    }
 
 
     // Create a new list item when clicking on the "Add" button
